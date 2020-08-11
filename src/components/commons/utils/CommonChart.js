@@ -140,7 +140,7 @@ export default function CommonChart (props) {
       }
       return result;
     }, defaultOptions) : {}
-  }, [options]);
+  }, [options, defaultOptions]);
 
   return (
     <ReactEchartsCore

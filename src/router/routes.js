@@ -89,7 +89,7 @@ const routes = [
     ],
   },
   {
-    path: '/dashboard',
+    path: '/dashboard/:time?',
     name: 'dashboard',
     component: lazy(() => import('@/components/dashboard/Container')),
     meta: {

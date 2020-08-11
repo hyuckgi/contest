@@ -3,7 +3,8 @@ const detailColumns = [
     key: 'label',
     dataIndex: ['label'],
     title: '시간',
-    width: '10%'
+    fixed: 'left',
+    width: 200
   }
 ];
 

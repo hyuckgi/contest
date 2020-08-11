@@ -1,18 +1,54 @@
-import React, { useCallback, useMemo, useState } from 'react';
+/* eslint-disable no-param-reassign */
+import React, { useCallback, useMemo, useState, useEffect } from 'react';
 import { Layout, Button } from 'antd';
 import moment from 'moment';
+import { useParams } from 'react-router-dom';
 
 import { HeaderComponent, BreadCrumb } from '@/layouts';
 import { service } from '@/configs';
 import { CommonChart } from '@/components/commons';
 
-function Content() {  
+import mockData from '@/tft-total.json';
+import mockDataEach from '@/tft.json';
+
+console.log('mockDataEach', mockDataEach);
+
+function Content() {
+  const params = useParams();
+
+  const [ current, setCurrent ] = useState(moment().year(2020).month(6).date(27).hour(9).minute(0));
+
   const [ times ] = useState({
-    from: moment().subtract(1, 'd').hour(17),
-    to: moment().add(1, 'd').hour(3),
+    from: moment(current).subtract(1, 'd').hour(18),
+    to: moment(current).add(1, 'd').hour(4),
   });
 
-  console.log('times', times)
+  const mergedData = mockDataEach.reduce((result, item) => {
+    if(!result['realPv'].length) {
+      result['realPv'] = service.getValue(item, 'realPv', []);
+    } else {
+      result['realPv'] = result['realPv'].reduce((innerResult, inner, idx) => {
+        innerResult[idx]['pv'] = service.getValue(innerResult, `${idx}.pv`, 0) + service.getValue(inner, 'pv', 0)
+        return innerResult;
+      }, result['realPv']);
+    } 
+    return result;
+  }, { realPv: [] });
+
+  console.log('mergedData', mergedData)
+
+  useEffect(() => {
+    const setTime = () => {
+      if (params.time) {
+        return setCurrent(moment().year(2020).month(6).date(27).hour(20).minute(0))
+      }
+      return setCurrent(moment().year(2020).month(6).date(27).hour(9).minute(0))
+    }
+    setTime();
+    return () => {}
+  }, [params.time]);
+  
+
   const getOptions = useCallback(() => {
     return {
       legend: {
@@ -28,7 +64,7 @@ function Content() {
         {
           type: 'line',
           name: '전일 예측 연계전력(PV+ESS)',
-          data: new Array(34).fill('').map((item, idx) => idx * 10),
+          data: (mockData || []).map(item => service.getValue(item, 'value', 0)),
           symbol: 'none',
           itemStyle: {
             color: '#b8d2ff',
@@ -42,7 +78,7 @@ function Content() {
         {
           type: 'line',
           name: '시간별 연계전력(PV+ESS)',
-          data: new Array(34).fill('').map((item, idx) => (idx + 1) * 10),
+          data: service.getValue(mergedData, 'realPv', []).map(item => service.getValue(item, 'pv', 0)),
           symbol: 'none',
           itemStyle: {
             color: '#0d83ff',
@@ -54,48 +90,16 @@ function Content() {
         }
       ]
     }
-    // // const type = values.site.types.find(({dataIndex}) => dataIndex === service.getValue(site, 'type', null))
-    // if (type) {
-    //   // const legends = type.getChartLegends(interval);
-    //   // const merged = legends.filter(legend => root === 'summary' ? summaryLegends.includes(legend.key) : legend.key !== 'link').map(legend => {
-    //   //   const matched = legendOptions.filter(({key}) => key === service.getValue(legend, 'key', null)).find(legend => legend)
-    //   //   return matched ? { ...legend, ...matched } : legend
-    //   // });
-  
-    //   return {
-    //     legend: {
-    //       data: legends.map(legend => legend.label),
-    //     },
-    //     xAxis: {
-    //       data: service.getXAxisData({ from: moment(from), to: moment(to), interval }),
-    //     },
-    //     series: merged.map((legend) => {
-    //       return {
-    //         ...legend,
-    //         legend: {
-    //           icon: 'circle',
-    //           itemWidth: 10,
-    //         },
-    //         name: legend.label,
-    //         stack: root === 'summary' ? '' : legend.stack,
-    //         data: legend.key === 'link' ? service.getLinkedPower(site) : service.getValue(site, `${legend.dataIndex.join('.')}`, []).map(item => service.getFixed(service.getValue(item, `${legend.dataKey}`, 0)))
-    //       }
-    //     })
-    //   }
-    // }
-    // return {}
-  }, []);
+  }, [times, mergedData]);
   
   const options = useMemo(() => getOptions(), [getOptions]);
-  
-  console.log('options', options)
 
   return (
     <Layout.Content style={{ marginRight: 36 }}>
       <HeaderComponent />
       <Layout style={{ background: 'transparent', paddingTop: 14, height: 'calc(100% - 44px)' }}>
         <Layout.Content>
-          <BreadCrumb root="dashboard" />
+          <BreadCrumb root="dashboard" time={current} />
 
           <div className="chart-wrap" style={{ marginTop: 81 }}>
             <CommonChart 

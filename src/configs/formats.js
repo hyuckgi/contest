@@ -6,11 +6,12 @@ const timeFormat = {
 
   YEARMONTH: 'YYYY-MM',
 
-  FULLDATETIME_DOT: 'YYYY.MM.DD HH:mm'
+  FULLDATETIME_DOT: 'YYYY.MM.DD HH:mm',
 };
 
 timeFormat.FULLDATETIME = `${timeFormat.FULLDATE} ${timeFormat.FULLTIME}`;
 timeFormat.HALFDATETIME = `${timeFormat.FULLDATE} ${timeFormat.TIME_MIN}`;
+timeFormat.HALFDATEHOUR = `${timeFormat.FULLDATE} ${timeFormat.TIME_HOUR}`;
 
 export {
   timeFormat

@@ -1,5 +1,7 @@
 import moment from 'moment';
 
+const defaultDecimal = 2;
+
 const service = {
   getValue: (obj, key, defaultValue) => {
     if (!obj) {
@@ -20,6 +22,15 @@ const service = {
       value = newValue;
     }
     return value;
+  },
+  getFixed: (
+    value = undefined,
+    decimal = defaultDecimal,
+  ) => {
+    if (!value) {
+      return 0;
+    }
+    return Number((value || 0).toFixed(decimal));
   },
   getPrefix: (interval)  => {
     switch (interval) {
