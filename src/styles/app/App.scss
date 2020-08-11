@@ -1,0 +1,22 @@
+// Service의 default style => 각 component or page에서 override 할수 있다.
+
+.header{
+  text-align: center;
+  h3{
+    color: $white-color;
+  }
+}
+
+.footer{
+  text-align: center;
+  p{
+    font-weight:bold;
+  }
+}
+
+// import common component 
+@import './layout.scss';
+
+// import component or page 
+@import './pages/Login.scss';
+@import './components/Home.scss';

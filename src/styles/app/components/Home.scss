@@ -1,0 +1,44 @@
+.home{
+  text-align: center;
+  &.ant-layout{
+    background: #282c34;
+
+    @media (prefers-reduced-motion: no-preference) {
+      img {
+        width: 300px;
+        animation: App-logo-spin infinite 20s linear;
+      }
+    }
+
+    @keyframes App-logo-spin {
+      from {
+        transform: rotate(0deg);
+      }
+      to {
+        transform: rotate(360deg);
+      }
+    }
+  }
+  
+  .hello{
+    color: $white-color;
+    h1{
+      color: $white-color;
+    }
+    h3 {
+      color: $white-color;
+      margin: 40px 0 0;
+    }
+    ul {
+      list-style-type: none;
+      padding: 0;
+    }
+    li {
+      display: inline-block;
+      margin: 0 10px;
+    }
+    a {
+      color: #42b983;
+    }
+  }
+}

@@ -1,0 +1,114 @@
+// normalize && override antd style
+
+#root{
+  h1, h2, h3, h4, h5, h6{
+    margin-bottom: 0;
+  }
+  
+  p{
+    margin-bottom: 0;
+  }
+
+  .app{
+    padding: 30px 30px 30px 48px;
+  }
+
+  .ant-btn{
+    &.btn-small{
+      height: 26px;
+      line-height: 1rem;
+      box-shadow: 0 0 6px 0 #008fff;
+      padding: 4px 14px;
+    }
+  }
+
+  .ant-table{
+    font-size: 12px;
+    color: #3f86ef;
+    
+    .ant-table-thead > tr > th{
+      background: transparent;
+      border-bottom: none;
+      font-size: 12px;
+      color: #3f86ef;
+    }
+
+    .ant-table-placeholder{
+      .ant-table-cell{
+        border-bottom: none;
+        .ant-empty{
+          color: #fff;
+        }
+      }
+      &:hover > td{
+        background-color: transparent;
+      }
+    }
+  }
+}
+
+.dashboard-wrap{
+  .ant-card{
+    &.sider-card{
+      background-color: rgba(#224596, 0.1);
+      height: 100%;
+      .ant-card-body{
+        padding: 0;
+        height: 100%;
+
+        img{
+          width: 100%;
+          max-width: 400px;
+        }
+      }
+    }
+  }
+  .chart-wrap{
+    position: relative;
+
+    .btn-small{
+      position: absolute;
+      top:0;
+      left:0; 
+    }
+  }
+}
+
+.detail-wrap{
+  .content-wrap{
+    padding: 30px 50px;
+
+    & > .ant-card{
+      .ant-card-head-wrapper{
+        & > .ant-card-head-title{
+          padding: 0;
+        }
+      }
+
+      .ant-card-body{
+        position: relative;
+        .title-wrap{
+          position: absolute;
+          top: 14px;
+          left: 0;
+          
+
+          & > .ant-typography{
+            color: #3f86ef;
+          }
+
+          h4{
+            font-size: 24px;
+            font-weight: bold;
+            display: inline-block;
+          }
+
+          span{
+            display: inline-block;
+            margin-left: 10px;
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,14 @@
+.login-wrap{
+  .ant-input-password{
+    .ant-input-suffix{
+      display: none;
+    }
+  }
+  .ant-btn{
+    &.ant-btn-primary:not(:disabled){
+      box-shadow: 0 0 6px 0 #008fff;
+      font-size: 16px;
+      font-weight: bold;
+    }
+  }
+}

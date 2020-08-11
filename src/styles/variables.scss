@@ -1,0 +1,65 @@
+// 전역으로 사용할 sass 변수를 지정합니다.
+// 수정후 재시작시 적용됩니다.
+
+// ant-component에 주입될 변수를 선언합니다.
+
+$primary-color: #3f86ef;
+// https://github.com/vueComponent/ant-design-vue/blob/master/components/style/themes/default.less
+
+// colors
+$black-color: #333;
+$white-color: #fff;
+$green-color: #22d061;
+$blue-color: #1ba1f9;
+$red-color: #fd3760;
+$yellow-color: #ffcc01;
+$util-color: #6566cb;
+$grey-color: #666;
+
+// Layout
+$layout-body-background: linear-gradient(#001d5f, #0b1730); 
+$layout-header-background: transparent;
+$layout-header-height: 44px;
+$layout-header-padding: 0 0;
+$layout-sider-background: transparent;
+
+// Input
+// ---
+$input-height-base: 48px;
+$input-padding-horizontal: 10px;
+
+$input-color: #9ccbff;
+$input-border-color: transparent;
+$input-bg: #0c265e;
+$input-placeholder-color: #2f68c0;
+
+
+// Form
+// ---
+$form-item-margin-bottom: 6px;
+
+// Buttons
+// ---
+$btn-border-radius-base: 2px;
+$btn-height-base: 48px;
+
+$btn-disable-color: #2f68c0;
+$btn-disable-bg: transparent;
+$btn-disable-border: #1c4485;
+$btn-primary-color: #000000;
+$btn-primary-bg: #3f86ef;
+
+// Card
+// ---
+$card-head-background: transparent;
+$card-background: transparent;
+$card-radius: 12px;
+
+// Table
+// --
+$table-bg: rgba(#224596, 0.1);
+$table-row-hover-bg: transparent;
+$table-padding-vertical: 7px;
+$table-padding-horizontal: 16px;
+$table-border-radius-base: 12px;
+$table-font-size: 12px;
