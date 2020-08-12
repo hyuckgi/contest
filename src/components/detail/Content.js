@@ -12,6 +12,7 @@ import mockData from '@/tft.json';
 import imgLogo from '@/assets/logo.png';
 import TableWrap from './TableWrap';
 
+
 const { Title } = Typography;
 
 function Content() {
@@ -25,6 +26,8 @@ function Content() {
   });
 
   const [ dataSource, setDataSource ] = useState([]);
+
+  console.log('dataSource', dataSource)
 
   const yesterday = service.getValue(dataSource, 'predicts.0', []);
   const todayList = service.getValue(dataSource, 'predicts', []).slice(1, service.getValue(dataSource, 'predicts.length', 0));
@@ -247,7 +250,7 @@ function Content() {
           data: (yesterday || []).map((item, idx) => {
             const yesterdayTotal = service.getValue(item, 'total', 0);
             const pv = service.getValue(today, `${idx}.pv`, 0);
-            const todayEss = service.getValue(today, 'ess', 0);
+            const todayEss = service.getValue(today, `${idx}.ess`, 0);
 
             return yesterdayTotal === 0 ? 0 : service.getFixed(((yesterdayTotal - (pv - todayEss)) / yesterdayTotal) * 100)
           }),

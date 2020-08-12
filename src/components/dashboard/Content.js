@@ -11,6 +11,7 @@ import { CommonChart } from '@/components/commons';
 import mockData from '@/tft-total.json';
 import mockDataEach from '@/tft.json';
 
+console.log('mockData', mockData);
 console.log('mockDataEach', mockDataEach);
 
 function Content() {
@@ -23,6 +24,7 @@ function Content() {
     to: moment(current).add(1, 'd').hour(4),
   });
 
+  // total
   const mergedData = mockDataEach.reduce((result, item) => {
     if(!result['realPv'].length) {
       result['realPv'] = service.getValue(item, 'realPv', []);

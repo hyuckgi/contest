@@ -12,7 +12,6 @@ const routes = [
     name: 'root',
     exact: true,
     redirect: '/dashoboard',
-    component: lazy(() => import('@/components/dashboard/Container')),
     meta: {
       navigation: {
         show: false,
