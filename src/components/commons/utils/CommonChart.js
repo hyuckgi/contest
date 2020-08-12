@@ -57,6 +57,10 @@ export default function CommonChart (props) {
       top: 0,
       right: 10,
       itemGap: 20,
+      inactiveColor: '#28406d',
+      textStyle: {
+        color: '#66a4ff',
+      },
     },
     grid: {
       left: 0,
@@ -107,13 +111,15 @@ export default function CommonChart (props) {
         show: false,
         lineStyle: {
           color: '#4e73aa',
-          type: 'dashed'
+          type: 'dashed',
+          opacity: 0.3
         }
       },
       splitLine: {
         lineStyle: {
           color: '#4e73aa',
-          type: 'dashed'
+          type: 'dashed',
+          opacity: 0.3
         }
       },
       axisTick: {

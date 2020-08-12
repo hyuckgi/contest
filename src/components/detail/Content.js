@@ -9,8 +9,18 @@ import { formats, service } from '@/configs';
 
 import mockData from '@/tft.json';
 
-import imgLogo from '@/assets/logo.png';
 import TableWrap from './TableWrap';
+
+import legend1 from '@/assets/legends/yesterday.svg';
+import legend2 from '@/assets/legends/yesterdayTotal.svg';
+import legend3 from '@/assets/legends/yesterdayESS.svg';
+
+import legend4 from '@/assets/legends/today.svg';
+import legend5 from '@/assets/legends/todayTotal.svg';
+import legend6 from '@/assets/legends/todayESS.svg';
+
+import indexDotted from '@/assets/legends/index-dotted.svg';
+import indexLine from '@/assets/legends/index-line.svg';
 
 const { Title } = Typography;
 
@@ -88,25 +98,29 @@ function Content() {
         data: [
           {
             name: '전일 예측 발전량(PV)',
+            icon: `image://${legend1}`
           }, 
           {
             name: '전일 예측 연계전력(PV+ESS)',
+            icon: `image://${legend2}`
           }, 
           {
             name: '전일 예측 충/방전량(ESS)',
-            icon: 'rect'
+            icon: `image://${legend3}`
           },
           {
-            name: '당일 재예측 발전량(PV)'
+            name: '당일 재예측 발전량(PV)',
+            icon: `image://${legend4}`
+          },
+          {
+            name: '당일 재예측 연계전력(PV+ESS)',
+            icon: `image://${legend5}`
           },
           {
             name: '당일 재예측 충/방전량(ESS)',
-            icon: 'rect'
+            icon: `image://${legend6}`
           }
         ],
-        textStyle: {
-          color: '#4e73aa',
-        },
         top: 10,
         selected: {
           // '전일 예측 발전량(PV)': false
@@ -126,15 +140,15 @@ function Content() {
           name: '전일 예측 발전량(PV)',
           symbol: 'none',
           itemStyle: {
-            color: '#a9c8ff',
+            color: '#377fff',
           },
           lineStyle: {
-            color: '#a9c8ff',
+            color: '#377fff',
+            type: 'dotted',
             width: 4
           },
           data: (yesterday || []).map(item => service.getValue(item, 'pv', 0)),
           smooth: true,
-          smoothMonotone: 'x'
         },
         {
           type: 'line',
@@ -146,11 +160,10 @@ function Content() {
           },
           lineStyle: {
             color: '#b8d2ff',
-            type: 'dashed',
+            type: 'dotted',
             width: 4
           },
           smooth: true,
-          smoothMonotone: 'x'
         },
         {
           type: 'line',
@@ -159,21 +172,36 @@ function Content() {
           symbol: 'none',
           itemStyle: {
             color: '#1830e3',
+            opacity: 0.4
           },
-          areaStyle: {},
-          stack: '1',
+          areaStyle: {
+            color: '#1830e3',
+            opacity: 0.4
+          },
           lineStyle: {
             color: '#1830e3',
-            width: 1
+            width: 0
           },
           smooth: true,
-          smoothMonotone: 'x',
-          sampling: 'average',
         },
         {
           type: 'line',
           name: '당일 재예측 발전량(PV)',
           data: (today || []).map(item => service.getValue(item, 'pv', 0)),
+          symbol: 'none',
+          itemStyle: {
+            color: '#093cff',
+          },
+          lineStyle: {
+            color: '#093cff',
+            width: 4
+          },
+          smooth: true,
+        },
+        {
+          type: 'line',
+          name: '당일 재예측 연계전력(PV+ESS)',
+          data: (today || []).map(item => service.getValue(item, 'total', 0)),
           symbol: 'none',
           itemStyle: {
             color: '#0dffdb',
@@ -183,7 +211,6 @@ function Content() {
             width: 4
           },
           smooth: true,
-          smoothMonotone: 'x'
         },
         {
           type: 'line',
@@ -192,16 +219,18 @@ function Content() {
           symbol: 'none',
           itemStyle: {
             color: '#0dffdb',
+            opacity: 0.5
           },
-          areaStyle: {},
-          stack: '1',
+          areaStyle: {
+            color: '#0dffdb',
+            opacity: 0.5
+          },
           lineStyle: {
             color: '#0dffdb',
-            width: 1
+            width: 0
           },
           smooth: true,
           smoothMonotone: 'x',
-          sampling: 'average',
         }
       ]
     }
@@ -213,14 +242,15 @@ function Content() {
         data: [
           {
             name: '전일 예측 오차범위',
+            icon: `image://${indexDotted}`
           },
           {
             name: '당일 예측 오차범위',
-            icon: `image://${imgLogo}`
+            icon: `image://${indexLine}`
           }
         ],
         textStyle: {
-          color: '#4e73aa',
+          color: '#66a4ff',
         },
         top: 10
       },
@@ -258,7 +288,7 @@ function Content() {
           smooth: true,
           lineStyle: {
             color: '#f4f26a',
-            type: 'dashed',
+            type: 'dotted',
             width: 4
           }
         },

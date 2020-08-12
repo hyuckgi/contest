@@ -10,6 +10,9 @@ import { CommonChart } from '@/components/commons';
 
 import mockData from '@/tft-total.json';
 
+import legend2 from '@/assets/legends/yesterdayTotal.svg';
+import legend5 from '@/assets/legends/todayTotal.svg';
+
 function Content() {
   const params = useParams();
 
@@ -35,9 +38,19 @@ function Content() {
   const getOptions = useCallback(() => {
     return {
       legend: {
-        data: ['전일 예측 연계전력(PV+ESS)', '시간별 연계전력(PV+ESS)'],
+        data: [
+          {
+            name: '전일 예측 연계전력(PV+ESS)',
+            icon: `image://${legend2}`
+          },
+          {
+            name: '시간별 연계전력(PV+ESS)',
+            icon: `image://${legend5}`
+          }
+        ],
+        pageIconSize: 12,
         textStyle: {
-          color: '#4e73aa',
+          color: '#66a4ff',
         }
       },
       xAxis: {
@@ -64,10 +77,11 @@ function Content() {
           data: params.time ? (mockData || []).map(item => service.getValue(item, 'real', 0)).slice(0, -8) : [],
           symbol: 'none',
           itemStyle: {
-            color: '#0d83ff',
+            color: '#0dffdb',
           },
           lineStyle: {
-            color: '#0d83ff',
+            color: '#0dffdb',
+            opacity: 0.8,
             width: 4
           }
         }

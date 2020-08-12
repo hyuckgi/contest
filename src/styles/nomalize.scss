@@ -24,13 +24,13 @@
 
   .ant-table{
     font-size: 12px;
-    color: #3f86ef;
+    color: #66a4ff;
     
     .ant-table-thead > tr > th{
       background: transparent;
       border-bottom: none;
       font-size: 12px;
-      color: #3f86ef;
+      color: #66a4ff;
     }
     .ant-table-tbody > tr > td{
       border-bottom: none;
@@ -38,7 +38,7 @@
 
     .ant-table-cell-fix-left, .ant-table-cell-fix-right,
     .ant-table-cell .ant-table-cell-fix-left .ant-table-cell-fix-left-last{
-      background: #0b1d4b !important;
+      background: #041438 !important;
     }
 
     .ant-table-placeholder{
@@ -102,7 +102,7 @@
           
 
           & > .ant-typography{
-            color: #3f86ef;
+            color: #66a4ff;
           }
 
           h4{
