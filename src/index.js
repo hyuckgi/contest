@@ -26,7 +26,7 @@ moment.locale('ko');
 const Root = () => {
   return (
     <ConfigProvider locale={koKR}>
-      <Router>
+      <Router basename="/contest/">
         <Switch>
           <Route path="/login" component={Login} />
           <AuthRoute path="*">

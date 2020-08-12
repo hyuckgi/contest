@@ -10,7 +10,7 @@
     "predeploy": "react-app-rewired build",
     "deploy": "gh-pages -d build"
   },
-  "homepage": "https://hyuckgi.github.io/",
+  "homepage": "https://hyuckgi.github.io/contest",
   "dependencies": {
     "antd": "4.2.4",
     "antd-dayjs-webpack-plugin": "^0.0.6",
