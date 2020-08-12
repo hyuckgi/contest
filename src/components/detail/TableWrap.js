@@ -52,6 +52,7 @@ function TableWrap(props) {
   const { times = {}, timeInterval = 0 } = props;
   const labels = service.getLabels({...times, interval: 'HOURLY' });
   const [ flexibleClassName, setFlexibleClassName ] = useState(null);
+
   
   useEffect(() => {
     const setClassName = () => {
@@ -71,13 +72,14 @@ function TableWrap(props) {
       return column
     });
     
-    return [...defaultColumns, ...labels.filter((label, idx) => idx > (timeInterval > validSlice ? validSlice : timeInterval) + defulatSlice).map(label => {
+    return [...defaultColumns, ...labels.filter((label, idx) => idx > (timeInterval > validSlice ? validSlice : timeInterval) + defulatSlice).map((label, idx) => {
       return {
         key: moment(label, formats.timeFormat.HALFDATEHOUR).format(formats.timeFormat.TIME_HOUR),
         dataIndex: moment(label, formats.timeFormat.HALFDATEHOUR).format(formats.timeFormat.TIME_HOUR),
         title: `${moment(label, formats.timeFormat.HALFDATEHOUR).format(formats.timeFormat.TIME_HOUR)} ~ ${moment(label, formats.timeFormat.HALFDATEHOUR).add(1, 'h').format(formats.timeFormat.TIME_HOUR)}`,
         width: 120,
-        align: 'center'
+        align: 'center',
+        className: idx > (timeInterval <= 5 ? 2 : timeInterval - 3 ) ? 'flex-column' : ''
       }
     })];
   }, [labels, timeInterval]);

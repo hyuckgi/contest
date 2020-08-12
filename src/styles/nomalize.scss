@@ -128,14 +128,19 @@
         & > .ant-table-body{
           & > table{
             & > .ant-table-tbody{
-              & > tr {
+              & > tr:not(:nth-child(2)) {
                 & > td{
                   transition: all 0.3s ease-in-out;
+
+                  &.flex-column{
+                    color: #ffffff;
+                    text-shadow: 2px 2px 2px rgba(#fff, 0.2);
+                  }
                 }
-                & > td:not(:first-child){
-                  color: #ffffff;
-                  text-shadow: 2px 2px 2px rgba(#fff, 0.2);
-                }
+                // & > td:not(:nth-child(-n+3)){
+                //   color: #ffffff;
+                //   text-shadow: 2px 2px 2px rgba(#fff, 0.2);
+                // }
               }
             }
           }

@@ -57,18 +57,12 @@ function Content() {
 
   useEffect(() => {
     return () => {
-      console.log('timeInterval')
       setTimeInterval(0)
     }
   }, []);
 
   const onClick = useCallback(() => {
-    history.replace({
-      pathname: '/dashboard',
-      state: {
-        from: service.getValue(history, 'location.pathname', '')
-      }
-    })
+    history.replace('/dashboard/time')
   }, [history]);
 
   const getTitle = useCallback(() => {
@@ -113,7 +107,10 @@ function Content() {
         textStyle: {
           color: '#4e73aa',
         },
-        top: 10
+        top: 10,
+        selected: {
+          // '전일 예측 발전량(PV)': false
+        }
       },
       xAxis: {
         data: service.getXAxisData({ from: moment(times.from), to: moment(times.to), interval: 'HOURLY' }),
