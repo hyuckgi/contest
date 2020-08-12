@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback } from 'react'
+import React, { useMemo, useCallback, useState, useEffect } from 'react'
 import { Table } from 'antd';
 import moment from 'moment';
 
@@ -45,16 +45,33 @@ function getPredict(params) {
   return yesterdayTotal === 0 ? 0 : service.getFixed(((yesterdayTotal - (todaypPv - essValue)) / yesterdayTotal) * 100)
 }
 
+const defulatSlice = 6;
+const validSlice = 5;
+
 function TableWrap(props) {
-  const { times = {} } = props;
+  const { times = {}, timeInterval = 0 } = props;
   const labels = service.getLabels({...times, interval: 'HOURLY' });
+  const [ flexibleClassName, setFlexibleClassName ] = useState(null);
+  
+  useEffect(() => {
+    const setClassName = () => {
+      setFlexibleClassName('flex');
+      setTimeout(() => {
+        setFlexibleClassName(null);
+      }, 1200)
+    }
+    setClassName();
+    return () => {
+      setFlexibleClassName(null);
+    }
+  }, [props.today]);
 
   const getMergedColumns = useCallback(() => {
     const defaultColumns = columns.detailColumns.map(column => {
       return column
     });
     
-    return [...defaultColumns, ...labels.map(label => {
+    return [...defaultColumns, ...labels.filter((label, idx) => idx > (timeInterval > validSlice ? validSlice : timeInterval) + defulatSlice).map(label => {
       return {
         key: moment(label, formats.timeFormat.HALFDATEHOUR).format(formats.timeFormat.TIME_HOUR),
         dataIndex: moment(label, formats.timeFormat.HALFDATEHOUR).format(formats.timeFormat.TIME_HOUR),
@@ -63,7 +80,7 @@ function TableWrap(props) {
         align: 'center'
       }
     })];
-  }, [labels]);
+  }, [labels, timeInterval]);
 
   const getDataSource = useCallback(() => {
     return sources.map((source) => {
@@ -87,6 +104,7 @@ function TableWrap(props) {
     <Table
       columns={mergedColumns}
       dataSource={dataSource}
+      className={flexibleClassName}
       scroll={{ x: 1500, y: 'calc((100vh - 300px) / 2)' }}
       locale={{ emptyText: null }}
       pagination={false}

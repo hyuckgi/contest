@@ -122,4 +122,25 @@
       }
     }
   }
+  .ant-table-wrapper{
+    &.flex{
+      .ant-table-container{
+        & > .ant-table-body{
+          & > table{
+            & > .ant-table-tbody{
+              & > tr {
+                & > td{
+                  transition: all 0.3s ease-in-out;
+                }
+                & > td:not(:first-child){
+                  color: #ffffff;
+                  text-shadow: 2px 2px 2px rgba(#fff, 0.2);
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
 }

@@ -12,7 +12,6 @@ import mockData from '@/tft.json';
 import imgLogo from '@/assets/logo.png';
 import TableWrap from './TableWrap';
 
-
 const { Title } = Typography;
 
 function Content() {
@@ -27,11 +26,8 @@ function Content() {
 
   const [ dataSource, setDataSource ] = useState([]);
 
-  console.log('dataSource', dataSource)
-
   const yesterday = service.getValue(dataSource, 'predicts.0', []);
-  const todayList = service.getValue(dataSource, 'predicts', []).slice(1, service.getValue(dataSource, 'predicts.length', 0));
-  // const todayGeneration = service.getValue(dataSource, 'realPv', []);
+  const todayList = service.getValue(dataSource, 'predicts', []).slice(5, service.getValue(dataSource, 'predicts.length', 0));
   const today = service.getValue(todayList, `${timeInterval}`, []);
 
   useEffect(() => {
@@ -39,7 +35,32 @@ function Content() {
     return () => {
       setDataSource([])
     }
-  }, [])
+  }, []);
+
+  useEffect(() => {
+    const dispatch = () => {
+      const el = document.getElementsByClassName('clickable-chart')[0];
+      el.addEventListener('click', (e) => {
+        if (e.y > 150) {
+          setTimeInterval(state => {
+            if(state === 10) {
+              return 0
+            }
+            return state + 1;
+          })
+        }
+      })
+    }
+    dispatch();
+    return () => {}
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      console.log('timeInterval')
+      setTimeInterval(0)
+    }
+  }, []);
 
   const onClick = useCallback(() => {
     history.replace({
@@ -58,7 +79,7 @@ function Content() {
         </Col>
         <Col span={21} style={{ textAlign: 'right', verticalAlign: 'middle' }}>
           <Title level={4} style={{ color: '#ffffff', fontSize: 21, display: 'inline-block' }}>
-            {current.add(timeInterval, 'hour').format(formats.timeFormat.FULLDATETIME_DOT)} 
+            {moment(current).add(timeInterval, 'hours').format(formats.timeFormat.FULLDATETIME_DOT)} 
           </Title>
 
           <Button type="primary" className="btn-small" style={{ verticalAlign: 'top', marginLeft: 19 }} onClick={onClick}>대시보드</Button>
@@ -278,10 +299,11 @@ function Content() {
         <Title level={4}>네모1</Title>      
         <Typography.Text>실시간 발전 현황</Typography.Text>
       </Typography>
-      
+
       <CommonChart
+        className="clickable-chart"
         options={options}
-        style={{ height: 'calc((100vh - 300px) / 2)', marginBottom: 20 }}
+        style={{ height: 'calc((100vh - 300px) * 0.7)' }}
       />
 
       <CommonChart
@@ -289,7 +311,7 @@ function Content() {
         style={{ height: 120, marginBottom: 30 }}
       />
 
-      <TableWrap times={times} yesterday={yesterday} today={today} />
+      <TableWrap times={times} yesterday={yesterday} today={today} timeInterval={timeInterval} />
     </Card>
   );
 }

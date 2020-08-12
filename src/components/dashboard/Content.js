@@ -9,10 +9,6 @@ import { service } from '@/configs';
 import { CommonChart } from '@/components/commons';
 
 import mockData from '@/tft-total.json';
-import mockDataEach from '@/tft.json';
-
-console.log('mockData', mockData);
-console.log('mockDataEach', mockDataEach);
 
 function Content() {
   const params = useParams();
@@ -23,21 +19,6 @@ function Content() {
     from: moment(current).subtract(1, 'd').hour(18),
     to: moment(current).add(1, 'd').hour(4),
   });
-
-  // total
-  const mergedData = mockDataEach.reduce((result, item) => {
-    if(!result['realPv'].length) {
-      result['realPv'] = service.getValue(item, 'realPv', []);
-    } else {
-      result['realPv'] = result['realPv'].reduce((innerResult, inner, idx) => {
-        innerResult[idx]['pv'] = service.getValue(innerResult, `${idx}.pv`, 0) + service.getValue(inner, 'pv', 0)
-        return innerResult;
-      }, result['realPv']);
-    } 
-    return result;
-  }, { realPv: [] });
-
-  console.log('mergedData', mergedData)
 
   useEffect(() => {
     const setTime = () => {
@@ -66,7 +47,7 @@ function Content() {
         {
           type: 'line',
           name: '전일 예측 연계전력(PV+ESS)',
-          data: (mockData || []).map(item => service.getValue(item, 'value', 0)),
+          data: (mockData || []).map(item => service.getValue(item, 'predict', 0)),
           symbol: 'none',
           itemStyle: {
             color: '#b8d2ff',
@@ -80,7 +61,7 @@ function Content() {
         {
           type: 'line',
           name: '시간별 연계전력(PV+ESS)',
-          data: service.getValue(mergedData, 'realPv', []).map(item => service.getValue(item, 'pv', 0)),
+          data: params.time ? (mockData || []).map(item => service.getValue(item, 'real', 0)) : [],
           symbol: 'none',
           itemStyle: {
             color: '#0d83ff',
@@ -92,7 +73,7 @@ function Content() {
         }
       ]
     }
-  }, [times, mergedData]);
+  }, [times, params.time]);
   
   const options = useMemo(() => getOptions(), [getOptions]);
 

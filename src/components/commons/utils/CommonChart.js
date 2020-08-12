@@ -144,6 +144,7 @@ export default function CommonChart (props) {
 
   return (
     <ReactEchartsCore
+      className={props.className}
       echarts={echarts}
       option={getOption()}
       notMerge
