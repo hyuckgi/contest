@@ -63,8 +63,8 @@ export default function CommonChart (props) {
       },
     },
     grid: {
-      left: 0,
-      right: 0,
+      left: 10,
+      right: 10,
       top: 50,
       bottom: 30,
     },
@@ -131,7 +131,7 @@ export default function CommonChart (props) {
 
   const getOption = React.useCallback(() => {
     return options ? Object.keys(options).reduce((result, key) => {
-      if (Array.isArray(result[key])) {
+      if (Array.isArray(result[key]) || Array.isArray(options[key])) {
         result[key] = options[key].length ? options[key].map((item, inx) => {
           return {
             ...result[key][inx],
@@ -155,6 +155,9 @@ export default function CommonChart (props) {
       option={getOption()}
       notMerge
       lazyUpdate
+      onEvents={{ 
+        'legendselectchanged': props.legendselectchanged
+      }}
       style={{...defaultStyle, ...style}}
     />
   );

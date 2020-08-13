@@ -19,8 +19,7 @@ import legend4 from '@/assets/legends/today.svg';
 import legend5 from '@/assets/legends/todayTotal.svg';
 import legend6 from '@/assets/legends/todayESS.svg';
 
-import indexDotted from '@/assets/legends/index-dotted.svg';
-import indexLine from '@/assets/legends/index-line.svg';
+import reMock from './test.json';
 
 const { Title } = Typography;
 
@@ -29,17 +28,27 @@ function Content() {
   const [ timeInterval, setTimeInterval ] = useState(0);
   const [ current ] = useState(moment().year(2020).month(6).date(27).hour(9).minute(0));
 
+  const [ selected, setSelected ] = useState({
+    '전일 예측 발전량(PV)': false,
+    '전일 예측 충/방전량(ESS)': false,
+    '전일 예측 연계전력(PV+ESS)': true,
+    '당일 재예측 발전량(PV)': false,
+    '당일 재예측 연계전력(PV+ESS)': false,
+    '당일 재예측 충/방전량(ESS)': false
+  });
+
   const [ times ] = useState({
     from: moment().startOf('day'),
     to: moment().endOf('day'),
   });
 
-  const [ dataSource, setDataSource ] = useState([]);
-
-  const yesterday = service.getValue(dataSource, 'predicts.0', []);
-  const todayList = service.getValue(dataSource, 'predicts', []).slice(5, service.getValue(dataSource, 'predicts.length', 0));
-  const today = service.getValue(todayList, `${timeInterval}`, []);
-
+  const [ mockDataSource, setDataSource ] = useState([]);
+  
+  // const yesterday = service.getValue(dataSource, 'predicts.0', []);
+  // const todayList = service.getValue(dataSource, 'predicts', []).slice(5, service.getValue(dataSource, 'predicts.length', 0));
+  const ticks = service.getValue(mockDataSource, 'tick', []).filter(({ datetime }) => moment(datetime).isSameOrBefore(moment(current).add(timeInterval, 'hour')), 'hour').map((item) => service.getValue(item, 'kwInstant', 0));
+  // const today = service.getValue(todayList, `${timeInterval}`, []);
+  
   useEffect(() => {
     setDataSource(service.getValue(mockData, '0'), [])
     return () => {
@@ -47,33 +56,30 @@ function Content() {
     }
   }, []);
 
-  useEffect(() => {
-    const dispatch = () => {
-      const el = document.getElementsByClassName('clickable-chart')[0];
-      el.addEventListener('click', (e) => {
-        if (e.y > 150) {
-          setTimeInterval(state => {
-            if(state === 10) {
-              return 0
-            }
-            return state + 1;
-          })
-        }
-      })
-    }
-    dispatch();
-    return () => {}
-  }, []);
+  const dataSource = reMock;
 
   useEffect(() => {
     return () => {
       setTimeInterval(0)
     }
   }, []);
+  
+  const onClickTime = () => {
+    return setTimeInterval(state => {
+      if(state === 10) {
+        return 0
+      }
+      return state + 1;
+    })
+  };
 
   const onClick = useCallback(() => {
     history.replace('/dashboard/time')
   }, [history]);
+
+  const onLegendSelectChange = useCallback((select) => {
+    setSelected(service.getValue(select, 'selected', {}))
+  }, []);
 
   const getTitle = useCallback(() => {
     return (
@@ -82,7 +88,7 @@ function Content() {
           <img src={require('@/assets/logo.png')} alt="logo" style={{ width: '90%', maxWidth: 130 }} />
         </Col>
         <Col span={21} style={{ textAlign: 'right', verticalAlign: 'middle' }}>
-          <Title level={4} style={{ color: '#ffffff', fontSize: 21, display: 'inline-block' }}>
+          <Title level={4} style={{ color: '#ffffff', fontSize: 21, display: 'inline-block', cursor: 'pointer' }} onClick={onClickTime}>
             {moment(current).add(timeInterval, 'hours').format(formats.timeFormat.FULLDATETIME_DOT)} 
           </Title>
 
@@ -122,13 +128,53 @@ function Content() {
           }
         ],
         top: 10,
-        selected: {
-          // '전일 예측 발전량(PV)': false
+        selected
+      },
+      xAxis: [
+        {
+          type: 'category',
+          axisPointer: {
+            type: 'shadow',
+            label: {
+              fontSize: 12,
+              color: '#333d4b'
+            }
+          },
+          axisLabel: {
+            color: '#4e73aa'
+          },
+          axisLine: {
+            show: false,
+          },
+          axisTick: {
+            show: false
+          },
+          boundaryGap: false,
+          data: service.getXAxisData({ from: moment(times.from), to: moment(times.to), interval: 'HOURLY' }),
+        },
+        {
+          type: 'category',
+          axisPointer: {
+            type: 'shadow',
+            label: {
+              fontSize: 6,
+              color: '#333d4b'
+            }
+          },
+          axisLabel: {
+            fontSize: 4,
+            show: true
+          },
+          axisLine: {
+            show: false,
+          },
+          axisTick: {
+            show: false
+          },
+          position: 'bottom',
+          data: service.getXAxisData({ from: moment(times.from), to: moment(times.to), interval: 'MINUTE' }),
         }
-      },
-      xAxis: {
-        data: service.getXAxisData({ from: moment(times.from), to: moment(times.to), interval: 'HOURLY' }),
-      },
+      ],
       yAxis: {
         axisLabel: {
           show: false
@@ -147,13 +193,15 @@ function Content() {
             type: 'dotted',
             width: 4
           },
-          data: (yesterday || []).map(item => service.getValue(item, 'pv', 0)),
+          // data: (yesterday || []).map(item => service.getValue(item, 'pv', 0)),
+          data: service.getValue(dataSource, 'yesterdayPv', []),
           smooth: true,
         },
         {
           type: 'line',
           name: '전일 예측 연계전력(PV+ESS)',
-          data: (yesterday || []).map(item => service.getValue(item, 'total', 0)),
+          // data: (yesterday || []).map(item => service.getValue(item, 'total', 0)),
+          data: service.getValue(dataSource, 'yesterdayTotal', []),
           symbol: 'none',
           itemStyle: {
             color: '#b8d2ff',
@@ -168,15 +216,16 @@ function Content() {
         {
           type: 'line',
           name: '전일 예측 충/방전량(ESS)',
-          data: (yesterday || []).map(item => service.getValue(item, 'ess', 0)),
+          // data: (yesterday || []).map(item => service.getValue(item, 'ess', 0)),
+          data: service.getValue(dataSource, 'yesterdayEss', []),
           symbol: 'none',
           itemStyle: {
             color: '#1830e3',
-            opacity: 0.4
+            opacity: 0.3
           },
           areaStyle: {
             color: '#1830e3',
-            opacity: 0.4
+            opacity: 0.3
           },
           lineStyle: {
             color: '#1830e3',
@@ -187,13 +236,14 @@ function Content() {
         {
           type: 'line',
           name: '당일 재예측 발전량(PV)',
-          data: (today || []).map(item => service.getValue(item, 'pv', 0)),
+          // data: (today || []).map(item => service.getValue(item, 'pv', 0)),
+          data: service.getValue(dataSource, 'todayPv', []),
           symbol: 'none',
           itemStyle: {
-            color: '#093cff',
+            color: '#daff80',
           },
           lineStyle: {
-            color: '#093cff',
+            color: '#daff80',
             width: 4
           },
           smooth: true,
@@ -201,7 +251,8 @@ function Content() {
         {
           type: 'line',
           name: '당일 재예측 연계전력(PV+ESS)',
-          data: (today || []).map(item => service.getValue(item, 'total', 0)),
+          // data: (today || []).map(item => service.getValue(item, 'total', 0)),
+          data: service.getValue(dataSource, 'todayTotal', []),
           symbol: 'none',
           itemStyle: {
             color: '#0dffdb',
@@ -215,7 +266,8 @@ function Content() {
         {
           type: 'line',
           name: '당일 재예측 충/방전량(ESS)',
-          data: (today || []).map(item => service.getValue(item, 'ess', 0)),
+          // data: (today || []).map(item => service.getValue(item, 'ess', 0)),
+          data: service.getValue(dataSource, 'todayEss', []),
           symbol: 'none',
           itemStyle: {
             color: '#0dffdb',
@@ -230,95 +282,24 @@ function Content() {
             width: 0
           },
           smooth: true,
-          smoothMonotone: 'x',
+        },
+        {
+          type: 'bar',
+          name: '실제 발전량',
+          hoverAnimation: false,
+          data: [0, 0, 0, 0, 0, ...ticks],
+          itemStyle: {
+            color: '#0a2b83',
+            opacity: 0.4
+          },
+          xAxisIndex: 1,
         }
       ]
     }
-  }, [yesterday, times, today]);
-
-  const getRangeOptions = useCallback(() => {
-    return {
-      legend: {
-        data: [
-          {
-            name: '전일 예측 오차범위',
-            icon: `image://${indexDotted}`
-          },
-          {
-            name: '당일 예측 오차범위',
-            icon: `image://${indexLine}`
-          }
-        ],
-        textStyle: {
-          color: '#66a4ff',
-        },
-        top: 10
-      },
-      xAxis: {
-        data: service.getXAxisData({ from: moment(times.from), to: moment(times.to), interval: 'HOURLY' }),
-      },
-      yAxis: {
-        axisLabel: {
-          color: '#4e73aa',
-          inside: true,
-          formatter: (value) => {
-            if (value === 0) {
-              return null;
-            }
-            return value;
-          },
-          padding: [0, 0, 0, 0]
-        }
-      },
-      series: [
-        {
-          type: 'line',
-          name: '전일 예측 오차범위',
-          data: (yesterday || []).map((item, idx) => {
-            const yesterdayTotal = service.getValue(item, 'total', 0);
-            const pv = service.getValue(today, `${idx}.pv`, 0);
-            const yesterdayEss = service.getValue(item, 'ess', 0);
-
-            return yesterdayTotal === 0 ? 0 : service.getFixed(((yesterdayTotal - (pv - yesterdayEss)) / yesterdayTotal) * 100)
-          }),
-          symbol: 'none',
-          itemStyle: {
-            color: '#f4f26a',
-          },
-          smooth: true,
-          lineStyle: {
-            color: '#f4f26a',
-            type: 'dotted',
-            width: 4
-          }
-        },
-        {
-          type: 'line',
-          name: '당일 예측 오차범위',
-          data: (yesterday || []).map((item, idx) => {
-            const yesterdayTotal = service.getValue(item, 'total', 0);
-            const pv = service.getValue(today, `${idx}.pv`, 0);
-            const todayEss = service.getValue(today, `${idx}.ess`, 0);
-
-            return yesterdayTotal === 0 ? 0 : service.getFixed(((yesterdayTotal - (pv - todayEss)) / yesterdayTotal) * 100)
-          }),
-          symbol: 'none',
-          itemStyle: {
-            color: '#f4f26a',
-          },
-          smooth: true,
-          lineStyle: {
-            color: '#f4f26a',
-            width: 4
-          }
-        },
-      ]
-    }
-  }, [times, yesterday, today]);
+  }, [times, selected, dataSource, ticks]);
 
   const title = useMemo(() => getTitle(), [getTitle]);
   const options = useMemo(() => getOptions(), [getOptions]);
-  const rangeOptions = useMemo(() => getRangeOptions(), [getRangeOptions]);
 
   return (
     <Card title={title} style={{ height: 'calc(100vh - 60px)'}} headStyle={{ borderBottom: 'none', padding: 0, minHeight: 'auto' }} bodyStyle={{ height: 'calc(100% - 56px)', padding: 0, paddingTop: 14 }} bordered={false}>
@@ -328,17 +309,12 @@ function Content() {
       </Typography>
 
       <CommonChart
-        className="clickable-chart"
         options={options}
-        style={{ height: 'calc((100vh - 300px) * 0.7)' }}
+        legendselectchanged={onLegendSelectChange}
+        style={{ height: 'calc(100vh - 344px)', marginBottom: 30 }}
       />
 
-      <CommonChart
-        options={rangeOptions}
-        style={{ height: 120, marginBottom: 30 }}
-      />
-
-      <TableWrap times={times} yesterday={yesterday} today={today} timeInterval={timeInterval} />
+      <TableWrap times={times} dataSource={dataSource} timeInterval={timeInterval} />
     </Card>
   );
 }

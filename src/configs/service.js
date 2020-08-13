@@ -38,30 +38,32 @@ const service = {
         return {
           timeType: 'months',
           gap: 1,
-          of: 'year',
           format: 'YYYY-MM',
           translate: 'MM',
-          display: 'YYYY',
           column: 'YYYY-MM',
         };
       case 'HOURLY':
         return {
           timeType: 'hours',
           gap: 1,
-          of: 'day',
           format: 'YYYY-MM-DD HH',
           translate: 'HH',
-          display: 'YYYY-MM-DD',
           column: 'HH:mm',
         };
+      case 'MINUTE':
+        return {
+          timeType: 'minutes',
+          gap: 5,
+          format: 'YYYY-MM-DD HH:mm',
+          translate: 'mm',
+          column: 'HH:mm',
+        }
       default:
         return {
           timeType: 'days',
-          of: 'month',
           gap: 1,
           format: 'YYYY-MM-DD',
           translate: 'MM-DD',
-          display: 'YYYY-MM',
           column: 'YYYY-MM-DD',
         };
     }

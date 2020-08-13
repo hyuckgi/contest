@@ -67,21 +67,21 @@ function Content() {
           },
           lineStyle: {
             color: '#b8d2ff',
-            type: 'dashed',
+            type: 'dotted',
             width: 4
           }
         },
         {
           type: 'line',
           name: '시간별 연계전력(PV+ESS)',
-          data: params.time ? (mockData || []).map(item => service.getValue(item, 'real', 0)).slice(0, -8) : [],
+          data: params.time ? (mockData || []).map(item => service.getValue(item, 'real', 0)).slice(0, -8) : (mockData || []).map(item => service.getValue(item, 'real', 0)).slice(0, 15),
           symbol: 'none',
           itemStyle: {
             color: '#0dffdb',
           },
           lineStyle: {
             color: '#0dffdb',
-            opacity: 0.8,
+            opacity: 0.5,
             width: 4
           }
         }
