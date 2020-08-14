@@ -8,17 +8,20 @@ const sources = [
   {
     key: '1',
     label: '예측발전량[kWh]',
-    dataIndex: ['yesterdayPv'],
+    dataIndex: ['yesterday'],
+    dataKey: 'pv',
   },
   {
     key: '2',
     label: '재예측 발전량[kWh]',
-    dataIndex: ['todayPv'],
+    dataIndex: ['today'],
+    dataKey: 'pv',
   },
   {
     key: '4',
     label: '재예측 충/방전량[kWh]',
-    dataIndex: ['todayEss'],
+    dataIndex: ['today'],
+    dataKey: 'ess',
   },
   {
     key: '5',
@@ -29,21 +32,18 @@ const sources = [
 ];
 
 function getPredict(params) {
-  const { yesterdayTotal = 0, todayPv = 0, todayEss = 0 } = params;
+  const yesterdayTotal = service.getValue(params, 'yesterday.total', 0);
+  const todaypPv = service.getValue(params, 'today.pv', 0);
+  const essValue = service.getValue(params, `${params.dataIndex.join(',')}.ess`, 0);
   
-  // const yesterdayTotal = service.getValue(params, 'yesterday.total', 0);
-  // const todaypPv = service.getValue(params, 'today.pv', 0);
-  // const essValue = service.getValue(params, `${params.dataIndex.join(',')}.ess`, 0);
-
-  // return yesterdayTotal === 0 ? 0 : service.getFixed(((yesterdayTotal - (todaypPv - essValue)) / yesterdayTotal) * 100)
-  return yesterdayTotal === 0 ? 0 : service.getFixed((Math.abs(yesterdayTotal - (todayPv - todayEss)) / yesterdayTotal) * 100)
+  return yesterdayTotal === 0 ? 0 : service.getFixed((Math.abs(yesterdayTotal - (todaypPv - essValue)) / yesterdayTotal) * 100)
 }
 
 const defulatSlice = 6;
 const validSlice = 5;
 
 function TableWrap(props) {
-  const { times = {}, timeInterval = 0, dataSource = {} } = props;
+  const { times = {}, timeInterval = 0 } = props;
   const labels = service.getLabels({...times, interval: 'HOURLY' });
   const [ flexibleClassName, setFlexibleClassName ] = useState(null);
 
@@ -58,7 +58,7 @@ function TableWrap(props) {
     return () => {
       setFlexibleClassName(null);
     }
-  }, [timeInterval]);
+  }, [props.today]);
 
   const getMergedColumns = useCallback(() => {
     const defaultColumns = columns.detailColumns.map(column => {
@@ -83,12 +83,14 @@ function TableWrap(props) {
         key: source.key,
         label: source.label,
         ...labels.reduce((result, label, idx) => {
-          result[moment(label, formats.timeFormat.HALFDATEHOUR).format(formats.timeFormat.TIME_HOUR)] = service.getValue(source, 'functionKey', false) ? getPredict({ yesterdayTotal: service.getValue(dataSource, `yesterdayTotal.${idx}`, 0), todayPv: service.getValue(dataSource, `todayPv.${idx}`, 0), todayEss: service.getValue(dataSource, `todayEss.${idx}`, 0) }) : service.getValue(dataSource, `${source.dataIndex.join(',')}.${idx}`, 0)
+          result[moment(label, formats.timeFormat.HALFDATEHOUR).format(formats.timeFormat.TIME_HOUR)] = service.getValue(source, 'functionKey', false) 
+            ? getPredict({ today: service.getValue(props, `today.${idx}`, {}), yesterday: service.getValue(props, `yesterday.${idx}`, {}), dataIndex: source.dataIndex }) 
+            : service.getFixed(service.getValue(props, `${source.dataIndex}.${idx}.${source.dataKey}`, 0))
           return result;
         }, {}),
       }
     });
-  }, [dataSource, labels]);
+  }, [props, labels]);
 
   const mergedColumns = useMemo(() => getMergedColumns(), [getMergedColumns]);
   const datasource = useMemo(() => getDataSource(), [getDataSource]);

@@ -42,12 +42,15 @@ function Content() {
     to: moment().endOf('day'),
   });
 
-  const [ mockDataSource, setDataSource ] = useState([]);
+  // const [ mockDataSource, setDataSource ] = useState([]);
+
+  const [ dataSource, setDataSource ] = useState([]);
+
+  const yesterday = service.getValue(dataSource, 'predicts.0', []);
+  const todayList = service.getValue(dataSource, 'predicts', []).slice(5, service.getValue(dataSource, 'predicts.length', 0));
+  const today = service.getValue(todayList, `${timeInterval}`, []);
   
-  // const yesterday = service.getValue(dataSource, 'predicts.0', []);
-  // const todayList = service.getValue(dataSource, 'predicts', []).slice(5, service.getValue(dataSource, 'predicts.length', 0));
-  const ticks = service.getValue(mockDataSource, 'tick', []).filter(({ datetime }) => moment(datetime).isSameOrBefore(moment(current).add(timeInterval, 'hour')), 'hour').map((item) => service.getValue(item, 'kwInstant', 0));
-  // const today = service.getValue(todayList, `${timeInterval}`, []);
+  const ticks = service.getValue(dataSource, 'tick', []).filter(({ datetime }) => moment(datetime).isSameOrBefore(moment(current).add(timeInterval, 'hour')), 'hour').map((item) => service.getValue(item, 'kwInstant', 0));
   
   useEffect(() => {
     setDataSource(service.getValue(mockData, '0'), [])
@@ -55,8 +58,6 @@ function Content() {
       setDataSource([])
     }
   }, []);
-
-  const dataSource = reMock;
 
   useEffect(() => {
     return () => {
@@ -193,15 +194,14 @@ function Content() {
             type: 'dotted',
             width: 4
           },
-          // data: (yesterday || []).map(item => service.getValue(item, 'pv', 0)),
-          data: service.getValue(dataSource, 'yesterdayPv', []),
+          data: (yesterday || []).map(item => service.getValue(item, 'pv', 0)),
           smooth: true,
+          z:2
         },
         {
           type: 'line',
           name: '전일 예측 연계전력(PV+ESS)',
-          // data: (yesterday || []).map(item => service.getValue(item, 'total', 0)),
-          data: service.getValue(dataSource, 'yesterdayTotal', []),
+          data: (yesterday || []).map(item => service.getValue(item, 'total', 0)),
           symbol: 'none',
           itemStyle: {
             color: '#b8d2ff',
@@ -212,62 +212,66 @@ function Content() {
             width: 4
           },
           smooth: true,
+          z:3
         },
         {
           type: 'line',
           name: '전일 예측 충/방전량(ESS)',
-          // data: (yesterday || []).map(item => service.getValue(item, 'ess', 0)),
-          data: service.getValue(dataSource, 'yesterdayEss', []),
+          data: (yesterday || []).map(item => service.getValue(item, 'ess', 0)),
           symbol: 'none',
           itemStyle: {
-            color: '#1830e3',
-            opacity: 0.3
+            color: '#0080ff',
+            opacity: 0.4
           },
           areaStyle: {
-            color: '#1830e3',
-            opacity: 0.3
+            color: '#0080ff',
+            opacity: 0.4
           },
           lineStyle: {
-            color: '#1830e3',
+            color: '#0080ff',
             width: 0
           },
           smooth: true,
+          z:4
         },
         {
           type: 'line',
           name: '당일 재예측 발전량(PV)',
-          // data: (today || []).map(item => service.getValue(item, 'pv', 0)),
-          data: service.getValue(dataSource, 'todayPv', []),
+          data: (today || []).map(item => service.getValue(item, 'pv', 0)),
           symbol: 'none',
           itemStyle: {
-            color: '#daff80',
+            color: '#7cff9e',
+            opacity: 0.7,
           },
           lineStyle: {
-            color: '#daff80',
+            color: '#7cff9e',
+            opacity: 0.7,
             width: 4
           },
           smooth: true,
+          z:5
         },
         {
           type: 'line',
           name: '당일 재예측 연계전력(PV+ESS)',
-          // data: (today || []).map(item => service.getValue(item, 'total', 0)),
-          data: service.getValue(dataSource, 'todayTotal', []),
+          data: (today || []).map(item => service.getValue(item, 'total', 0)),
           symbol: 'none',
           itemStyle: {
-            color: '#0dffdb',
+            color: '#00ffd9',
+            opacity: 0.7,
           },
           lineStyle: {
-            color: '#0dffdb',
+            color: '#00ffd9',
+            opacity: 0.7,
             width: 4
           },
           smooth: true,
+          z:6
         },
         {
           type: 'line',
           name: '당일 재예측 충/방전량(ESS)',
-          // data: (today || []).map(item => service.getValue(item, 'ess', 0)),
-          data: service.getValue(dataSource, 'todayEss', []),
+          data: (today || []).map(item => service.getValue(item, 'ess', 0)),
           symbol: 'none',
           itemStyle: {
             color: '#0dffdb',
@@ -282,6 +286,7 @@ function Content() {
             width: 0
           },
           smooth: true,
+          z:7
         },
         {
           type: 'bar',
@@ -289,14 +294,15 @@ function Content() {
           hoverAnimation: false,
           data: [0, 0, 0, 0, 0, ...ticks],
           itemStyle: {
-            color: '#0a2b83',
-            opacity: 0.4
+            color: '#2b5199',
+            opacity: 0.7
           },
           xAxisIndex: 1,
+          z:1
         }
       ]
     }
-  }, [times, selected, dataSource, ticks]);
+  }, [times, selected, today, yesterday, ticks]);
 
   const title = useMemo(() => getTitle(), [getTitle]);
   const options = useMemo(() => getOptions(), [getOptions]);
@@ -314,7 +320,7 @@ function Content() {
         style={{ height: 'calc(100vh - 344px)', marginBottom: 30 }}
       />
 
-      <TableWrap times={times} dataSource={dataSource} timeInterval={timeInterval} />
+      <TableWrap times={times} yesterday={yesterday} today={today} timeInterval={timeInterval} />
     </Card>
   );
 }

@@ -33,7 +33,8 @@ function Content() {
     setTime();
     return () => {}
   }, [params.time]);
-  
+
+  console.log('mockData', mockData)
 
   const getOptions = useCallback(() => {
     return {
@@ -74,7 +75,7 @@ function Content() {
         {
           type: 'line',
           name: '시간별 연계전력(PV+ESS)',
-          data: params.time ? (mockData || []).map(item => service.getValue(item, 'real', 0)).slice(0, -8) : (mockData || []).map(item => service.getValue(item, 'real', 0)).slice(0, 15),
+          data: params.time ? (mockData || []).map(item => service.getValue(item, 'real', 0)).slice(0, -8) : (mockData || []).map(item => service.getValue(item, 'real', 0)).slice(0, 16),
           symbol: 'none',
           itemStyle: {
             color: '#0dffdb',
