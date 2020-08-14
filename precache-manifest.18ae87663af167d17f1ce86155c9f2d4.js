@@ -1,6 +1,6 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "dd7459d153b50ee9f23911f6a2031c1f",
+    "revision": "9ab86c4da0eb8423e824b10e83b84427",
     "url": "/contest/index.html"
   },
   {
@@ -12,7 +12,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/contest/static/css/2.93032e94.chunk.css"
   },
   {
-    "revision": "473eb359f14bc57bfbc6",
+    "revision": "d2295aa862977f9292ff",
     "url": "/contest/static/css/main.45935db1.css"
   },
   {
@@ -28,20 +28,20 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/contest/static/js/2.ea7f4dd9.chunk.js"
   },
   {
-    "revision": "df00656ca75f1e843fe3",
-    "url": "/contest/static/js/3.e0deae5e.chunk.js"
+    "revision": "2c5a1cfa06112731af50",
+    "url": "/contest/static/js/3.c91a1dff.chunk.js"
   },
   {
-    "revision": "d01379d64a18530fd56e",
-    "url": "/contest/static/js/4.44066ff8.chunk.js"
+    "revision": "260629cca617a7ccec16",
+    "url": "/contest/static/js/4.9ae4aa1d.chunk.js"
   },
   {
-    "revision": "473eb359f14bc57bfbc6",
-    "url": "/contest/static/js/main.b28657bb.js"
+    "revision": "d2295aa862977f9292ff",
+    "url": "/contest/static/js/main.842f36fa.js"
   },
   {
     "revision": "815e4501ec0af78aca983eab952b06f6",
-    "url": "/contest/static/js/main.b28657bb.js.LICENSE"
+    "url": "/contest/static/js/main.842f36fa.js.LICENSE"
   },
   {
     "revision": "0df0c6fd269ef437651590fe4f8a1c9f",
@@ -56,16 +56,16 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/contest/static/media/slider_top2.c753020c.png"
   },
   {
-    "revision": "7973894017c509ed7ed74129d992aa40",
-    "url": "/contest/static/media/today.79738940.svg"
+    "revision": "f97917772b586947c279e51ab211a38a",
+    "url": "/contest/static/media/today.f9791777.svg"
   },
   {
     "revision": "b133f48e5331f56bb09a10f016832000",
     "url": "/contest/static/media/todayESS.b133f48e.svg"
   },
   {
-    "revision": "0c3aab2c97427d8a2cf205163fdf07db",
-    "url": "/contest/static/media/todayTotal.0c3aab2c.svg"
+    "revision": "f4cbae370c486592a27ea7df86099601",
+    "url": "/contest/static/media/todayTotal.f4cbae37.svg"
   },
   {
     "revision": "66061c96ffbda6d2d00559e1811d6618",
