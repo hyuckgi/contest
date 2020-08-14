@@ -19,8 +19,6 @@ import legend4 from '@/assets/legends/today.svg';
 import legend5 from '@/assets/legends/todayTotal.svg';
 import legend6 from '@/assets/legends/todayESS.svg';
 
-import reMock from './test.json';
-
 const { Title } = Typography;
 
 function Content() {
